@@ -198,7 +198,7 @@ public class UI {
         txtMsg = new TextArea();
         btnSend = new Button("Send Message");
 
-        btnGet = new Button("GetAllNewMessages!");
+        btnGet = new Button("Get All New Messages!");
 
         paneCenter.getChildren().addAll(txtMsg, btnSend, btnGet);
 
