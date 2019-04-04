@@ -131,48 +131,20 @@ public class UI {
         return btnQuit;
     }
 
-    public BorderPane getPaneHeader() {
-        return paneHeader;
-    }
-
     public VBox getPaneLeft() {
         return paneLeft;
-    }
-
-    public VBox getPaneRight() {
-        return paneRight;
     }
 
     public VBox getPaneCenter() {
         return paneCenter;
     }
 
-    public Label getLblTitle() {
-        return lblTitle;
-    }
-
-    public Button getBtnLogout() {
-        return btnLogout;
-    }
-
     public Button getBtnAddPic() {
         return btnAddPic;
     }
 
-    public FileChooser getFileChooser() {
-        return fileChooser;
-    }
-
-    public Image getImagePreview() {
-        return imagePreview;
-    }
-
     public String getImageString() {
         return imageString;
-    }
-
-    public void setImagePreview(Image imagePreview) {
-        this.imagePreview = imagePreview;
     }
 
     public void setImageString(String imageString) {
@@ -191,48 +163,8 @@ public class UI {
         return btnSetPref;
     }
 
-    public Label getLblMainColor() {
-        return lblMainColor;
-    }
-
-    public Label getLblSecColor() {
-        return lblSecColor;
-    }
-
-    public Label getLblTextColor() {
-        return lblTextColor;
-    }
-
-    public Label getLblUsernameColor() {
-        return lblUsernameColor;
-    }
-
-    public Circle getCircleMain() {
-        return circleMain;
-    }
-
-    public Circle getCircleSec() {
-        return circleSec;
-    }
-
-    public Circle getCircleText() {
-        return circleText;
-    }
-
-    public Circle getCircleUsername() {
-        return circleUsername;
-    }
-
     public List<Text> getListOfMsgUsernames() {
         return listOfMsgUsernames;
-    }
-
-    public Label getLblSubs() {
-        return lblSubs;
-    }
-
-    public Label getLblUsername() {
-        return lblUsername;
     }
 
     public List<Text> getListOfMsgs() {
@@ -273,9 +205,6 @@ public class UI {
         paneHeader.setCenter(lblTitle);
         paneHeader.setRight(paneLoginDetails);
 
-//        //Test Colors
-//        paneQuit.setBackground(new Background(new BackgroundFill(Color.web("#861574"), CornerRadii.EMPTY, Insets.EMPTY)));
-//        paneLoginDetails.setBackground(new Background(new BackgroundFill(Color.web("#555555"), CornerRadii.EMPTY, Insets.EMPTY)));
         paneHeader.setBackground(new Background(new BackgroundFill(Color.web(lightColor), CornerRadii.EMPTY, Insets.EMPTY)));
 
         root.setTop(paneHeader);
@@ -324,26 +253,18 @@ public class UI {
     }
 
     public void ConstructMainScreen(String username) {
-//        ClearCanvas();
-
-//        LoginTab();
 
         txtLogin.setVisible(false);
         btnLogin.setVisible(false);
-
-//        btnLogout = new Button("Logout");
-//
-//        paneHeader.getChildren().remove(btnLogin);
-//        paneHeader.getChildren().add(btnLogout);
 
         paneLeft = new VBox();
         paneLeft.setPrefWidth(300);
         paneLeft.setAlignment(Pos.TOP_CENTER);
         paneLeft.setPadding(new Insets(20));
+        paneLeft.setSpacing(20);
         SubListLabel();
         DrawNewSub(username);
 
-        //Test Colors
         paneLeft.setBackground(new Background(new BackgroundFill(Color.web(darkColor), CornerRadii.EMPTY, Insets.EMPTY)));
 
         root.setLeft(paneLeft);
@@ -354,7 +275,6 @@ public class UI {
         paneRight.setPadding(new Insets(20));
         paneRight.setSpacing(20);
 
-        //Test Colors
         paneRight.setBackground(new Background(new BackgroundFill(Color.web(darkColor), CornerRadii.EMPTY, Insets.EMPTY)));
 
         lblUsername = new Label("Welcome " + username);
@@ -381,6 +301,7 @@ public class UI {
         paneCenter.setBackground(new Background(new BackgroundFill(Color.web(lightColor), CornerRadii.EMPTY, Insets.EMPTY)));
 
         txtMsg = new TextArea();
+        txtMsg.setMinHeight(180);
         btnSend = new Button("Send Message");
 
         btnAddPic = new Button("Add Picture");
@@ -400,10 +321,6 @@ public class UI {
         a.show();
     }
 
-    private void ClearCanvas() {
-        root.getChildren().clear();
-    }
-
     public void showModal() {
         Stage dialog = new Stage();
         dialog.initOwner(stage);
@@ -411,10 +328,26 @@ public class UI {
 
         VBox paneModal = new VBox();
 
+        paneModal.setSpacing(15);
+        paneModal.setPadding(new Insets(20));
+
         FlowPane paneMainColor = new FlowPane();
         FlowPane paneSecColor = new FlowPane();
         FlowPane paneTextColor = new FlowPane();
         FlowPane paneUsernameColor = new FlowPane();
+        FlowPane paneCloseBtn = new FlowPane();
+
+        Button btnCloseSetPref = new Button("Done");
+
+        paneCloseBtn.setAlignment(Pos.CENTER);
+        paneCloseBtn.getChildren().add(btnCloseSetPref);
+
+        btnCloseSetPref.setOnAction(e->CloseModal(dialog));
+
+        paneMainColor.setHgap(15);
+        paneSecColor.setHgap(15);
+        paneTextColor.setHgap(15);
+        paneUsernameColor.setHgap(15);
 
         circleMain = new Circle(20);
         circleMain.setFill(Color.web(darkColor));
@@ -428,10 +361,10 @@ public class UI {
         circleUsername = new Circle(20);
         circleUsername.setFill(Color.web(usernameColor));
 
-        lblMainColor = new Label("Main Color: " + darkColor);
-        lblSecColor = new Label("Second Color: " + lightColor);
-        lblTextColor = new Label("Text Color: " + textColor);
-        lblUsernameColor = new Label("Username Color: " + usernameColor);
+        lblMainColor = new Label("Main Color: #" + darkColor);
+        lblSecColor = new Label("Second Color: #" + lightColor);
+        lblTextColor = new Label("Text Color: #" + textColor);
+        lblUsernameColor = new Label("Username Color: #" + usernameColor);
 
         Button btnMainColor = new Button("Change");
         Button btnSecColor = new Button("Change");
@@ -448,7 +381,7 @@ public class UI {
         btnTextColor.setOnAction(e->ChangeColor('t'));
         btnUsernameColor.setOnAction(e->ChangeColor('u'));
 
-        paneModal.getChildren().addAll(paneMainColor, paneSecColor, paneTextColor, paneUsernameColor);
+        paneModal.getChildren().addAll(paneMainColor, paneSecColor, paneTextColor, paneUsernameColor, paneCloseBtn);
 
         Scene scene = new Scene(paneModal);
 
@@ -513,11 +446,17 @@ public class UI {
 
         Button btnSelectColor = new Button("Choose New Color");
 
+        VBox root = new VBox();
+        root.setSpacing(30);
+        root.setAlignment(Pos.CENTER);
 
-        FlowPane root = new FlowPane();
-        root.setPadding(new Insets(10));
-        root.setHgap(10);
-        root.getChildren().addAll(circle, colorPicker, btnSelectColor);
+        FlowPane paneColPick = new FlowPane();
+        paneColPick.setAlignment(Pos.CENTER);
+        paneColPick.setPadding(new Insets(20));
+        paneColPick.setHgap(40);
+        paneColPick.getChildren().addAll(circle, colorPicker);
+
+        root.getChildren().addAll(paneColPick, btnSelectColor);
 
         Scene scene = new Scene(root, 400, 300);
 

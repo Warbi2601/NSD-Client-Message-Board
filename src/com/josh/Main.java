@@ -3,17 +3,14 @@ package com.josh;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;        // required for Scanner
@@ -46,7 +43,7 @@ public class Main extends Application {
             public void run() {
                 while (user != null) {
                     try {
-                        Thread.sleep(2000);
+                        Thread.sleep(4000);
                         Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
@@ -160,7 +157,7 @@ public class Main extends Application {
         Request req = null;
 
         try {
-            req = new GetRequest(user.getName(), lastMessageRecieved); //Need to work out "After" Variable
+            req = new GetRequest(user.getName(), lastMessageRecieved);
         } catch (NoSuchElementException e) {
             out.println("ILLEGAL COMMAND");
         }
@@ -247,19 +244,6 @@ public class Main extends Application {
         // Try to deserialize a list of messages
         if ((resp = MessageListResponse.fromJSON(json)) != null) {
 
-//
-//            ArrayList<Message> messages = messageList;
-//
-//            Message a = new Message("dd", "dd", 1);
-//
-//            ((int) a.getWhen()).compareTo(1);
-//
-//            Comparator<Message> compareByWhen = (Message o1, Message o2) -> o1.getWhen() .compareTo( o2.getWhen() );
-//
-//            Collections.sort(employees, compareById);
-//
-//            Collections.sort(employees, compareById.reversed());
-
             String messageBoxCSS = "-fx-border-color: #cecece;\n" +
                     "-fx-border-insets: 5;\n" +
                     "-fx-padding: 25;\n" +
@@ -269,41 +253,48 @@ public class Main extends Application {
 
             List<Message> newMessages = new ArrayList<>();
             for (Message m : ((MessageListResponse)resp).getMessages()) {
-                messageList.add(m);
-                newMessages.add(m);
+                messageList.add(0, m);
+                newMessages.add(0, m);
                 if(m.getWhen() > lastMessageRecieved) lastMessageRecieved = (int)m.getWhen();
             }
 
-            for (Message msg : newMessages) {
+            if(newMessages.size() != 0) {
 
-                VBox tempVbox = new VBox();
-                tempVbox.setStyle(messageBoxCSS);
-                tempVbox.setSpacing(10);
+                ui.getPaneMessages().getChildren().clear();
+
+                for (Message msg : messageList) {
+
+                    VBox tempVbox = new VBox();
+                    tempVbox.setStyle(messageBoxCSS);
+                    tempVbox.setSpacing(10);
 
 //                Text lblWhen = new Text("When (DEBUG) : " + Long.toString(msg.getWhen()));
-                Text lblFrom = new Text(msg.getFrom());
-                Text lblMsg = new Text(msg.getBody());
+                    Text lblFrom = new Text(msg.getFrom());
+                    Text lblMsg = new Text(msg.getBody());
 
-                lblFrom.setFont(Font.font(24));
-                lblFrom.setFill(Color.web(ui.usernameColor));
+                    lblFrom.setFont(Font.font(24));
+                    lblFrom.setFill(Color.web(ui.usernameColor));
 
 //                lblWhen.setFill(Color.web(ui.textColor));
-                lblMsg.setFill(Color.web(ui.textColor));
-                tempVbox.getChildren().addAll( /*lblWhen,*/ lblFrom, lblMsg);
+                    lblMsg.setFill(Color.web(ui.textColor));
+                    tempVbox.getChildren().addAll( /*lblWhen,*/ lblFrom, lblMsg);
 
-                if(!msg.getPic().equals("")) {
-                    Image img = new Image(new ByteArrayInputStream(msg.decodeImage()));
-                    ImageView imgView = new ImageView(img);
-                    imgView.setFitWidth(500);
-                    imgView.setFitHeight(500);
-                    imgView.setPreserveRatio(true);
-                    tempVbox.getChildren().add(imgView);
+                    if(!msg.getPic().equals("")) {
+                        Image img = new Image(new ByteArrayInputStream(msg.decodeImage()));
+                        ImageView imgView = new ImageView(img);
+                        imgView.setFitWidth(500);
+                        imgView.setFitHeight(500);
+                        imgView.setPreserveRatio(true);
+                        tempVbox.getChildren().add(imgView);
+                    }
+
+                    ui.getListOfMsgUsernames().add(lblFrom);
+                    ui.getListOfMsgs().add(lblMsg);
+                    ui.getPaneMessages().getChildren().add(tempVbox);
                 }
-
-                ui.getListOfMsgUsernames().add(lblFrom);
-                ui.getListOfMsgs().add(lblMsg);
-                ui.getPaneMessages().getChildren().add(tempVbox);
             }
+
+            newMessages.clear();
             return;
         }
 
